@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import math
 """ tsk 2 """
+import math
 
 
 def floor(n: float) -> int:
