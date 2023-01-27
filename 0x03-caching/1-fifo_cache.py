@@ -7,6 +7,7 @@ class FIFOCache(BaseCaching):
     """FIFOCache"""
 
     def __init__(self):
+        """init func"""
         super().__init__()
         self.keys = []
 
