@@ -71,3 +71,27 @@ def get_db() -> connection.MySQLConnection:
                                         )
 
     return cnx
+
+
+def main():
+    """main func"""
+    logger = get_logger()
+    db = get_db()
+
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users")
+
+    for row in cursor.fetchall():
+        name, email, phone, ssn, password, ip, last_login, user_agent = row
+        data = f"name={name}; email={email}; phone={phone}; ssn={ssn};\
+            password={password}; ip={ip}; last_login={last_login};\
+                user_agent={user_agent}"
+
+        logger.info(data)
+
+    cursor.close()
+    db.close()
+
+
+if __name__ == '__main__':
+    main()
