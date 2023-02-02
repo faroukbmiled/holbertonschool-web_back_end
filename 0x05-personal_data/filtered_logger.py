@@ -53,7 +53,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db():
+def get_db() -> connection.MySQLConnection:
     """get_db"""
     host = os.environ.get("PERSONAL_DATA_DB_HOST", "localhost")
     user = os.environ.get("PERSONAL_DATA_DB_USERNAME", "root")
@@ -63,12 +63,11 @@ def get_db():
     if not db_name:
         raise Exception("PERSONAL_DATA_DB_NAME environment variable not set")
 
-    connection = mysql.connector.connect(
+    connection = connection.MySQLConnection(
                                         host=host,
                                         user=user,
                                         password=password,
                                         database=db_name,
-                                        auth_plugin="mysql_native_password"
                                         )
 
     return connection
