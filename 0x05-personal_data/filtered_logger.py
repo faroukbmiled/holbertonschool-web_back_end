@@ -4,7 +4,7 @@ import logging
 import re
 from typing import List
 import os
-import mysql.connector
+from mysql.connector import connection
 
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -63,11 +63,11 @@ def get_db() -> connection.MySQLConnection:
     if not db_name:
         raise Exception("PERSONAL_DATA_DB_NAME environment variable not set")
 
-    connection = connection.MySQLConnection(
+    cnx = connection.MySQLConnection(
                                         host=host,
                                         user=user,
                                         password=password,
                                         database=db_name,
                                         )
 
-    return connection
+    return cnx
