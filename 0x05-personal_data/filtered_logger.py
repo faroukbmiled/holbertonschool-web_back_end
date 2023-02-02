@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
+"""filter_datum"""
 import re
 from typing import List
-"""filter_datum"""
 
 
 def filter_datum(fields: List[str], redaction: str,
@@ -10,4 +10,4 @@ def filter_datum(fields: List[str], redaction: str,
     for field in fields:
         message = re.sub(fr'{field}=.+?{separator}',
                          f'{field}={redaction}{separator}', message)
-    return message.rstrip(separator)
+    return message
