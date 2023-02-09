@@ -6,32 +6,40 @@ from api.v1.auth.auth import Auth
 from uuid import uuid4
 from flask import jsonify, make_response, request
 from models.user import User
+from api.v1.auth.session_auth import SessionAuth
+from os import getenv
 
-from .__init__ import app_views
+from api.v1.views import app_views, abort
 
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
 def login() -> str:
-    """ POST /api/v1/auth_session/login"""
-    email = request.form.get('email')
-    if email is None or email == "":
+    """ view for route /auth_session/login, method POST """
+    u_email = request.form.get('email')
+    if not u_email:
         return jsonify({"error": "email missing"}), 400
-    password = request.form.get('password')
-    if password is None or password == "":
+    u_password = request.form.get('password')
+    if not u_password:
         return jsonify({"error": "password missing"}), 400
-
-    user = User.search(email)
-    if user is None:
+    user = User.search({'email': u_email})
+    if not user:
         return jsonify({"error": "no user found for this email"}), 404
+    for u in user:
+        if u.is_valid_password(u_password):
+            session_id = SessionAuth.create_session(u.id)
+            user_json = jsonify(u.to_json())
+            user_json.set_cookie(getenv('SESSION_NAME'), session_id)
+            return user_json
+        else:
+            return jsonify({"error": "wrong password"}), 401
 
-    if not user.is_valid_password(password):
-        return jsonify({"error": "wrong password"}), 401
 
-    from api.v1.app import auth
-    session_id = auth.create_session(user.id)
-    if session_id is None:
-        return jsonify({"error": "cannot create session"}), 500
-
-    response = make_response(user.to_json())
-    response.set_cookie(app_views.config['SESSION_NAME'], session_id)
-    return response
+@app_views.route('/auth_session/logout', methods=['DELETE'],
+                 strict_slashes=False)
+def logout() -> str:
+    """ view for route /auth_session/logout, method DELETE """
+    destroy_session_res = SessionAuth.destroy_session(request)
+    if destroy_session_res is False:
+        abort(404)
+    else:
+        return jsonify({}), 200
