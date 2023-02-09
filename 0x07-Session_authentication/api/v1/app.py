@@ -30,18 +30,15 @@ def before_request() -> str:
         return
     if request.path in ['/api/v1/status/',
                         '/api/v1/unauthorized/',
-                        '/api/v1/forbidden/',
-                        '/api/v1/users/me']:
+                        '/api/v1/forbidden/']:
         return
     if not auth.require_auth(request.path, ['/api/v1/status/',
                                             '/api/v1/unauthorized/',
-                                            '/api/v1/forbidden/',
-                                            '/api/v1/users/me']):
+                                            '/api/v1/forbidden/']):
         return
     if auth.authorization_header(request) is None:
         abort(401)
-    request.current_user = auth.current_user(request)
-    if request.current_user is None:
+    if auth.current_user(request) is None:
         abort(403)
 
 
