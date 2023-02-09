@@ -4,6 +4,7 @@ auth module for the API
 """
 import os
 from typing import List
+import typing
 
 T = typing.TypeVar('T')
 
