@@ -6,7 +6,6 @@ from api.v1.auth.auth import Auth
 from uuid import uuid4
 from flask import jsonify, make_response, request
 from models.user import User
-from api.v1.auth.session_auth import SessionAuth
 from os import getenv
 
 from api.v1.views import app_views, abort
@@ -26,19 +25,20 @@ def login() -> str:
         return jsonify({"error": "no user found for this email"}), 404
     for u in user:
         if u.is_valid_password(u_password):
-            session_id = SessionAuth.create_session(u.id)
+            from api.v1.auth import auth
+            session_id = auth.create_session(u.id)
             user_json = jsonify(u.to_json())
             user_json.set_cookie(getenv('SESSION_NAME'), session_id)
             return user_json
         else:
             return jsonify({"error": "wrong password"}), 401
 
-
 @app_views.route('/auth_session/logout', methods=['DELETE'],
                  strict_slashes=False)
 def logout() -> str:
     """ view for route /auth_session/logout, method DELETE """
-    destroy_session_res = SessionAuth.destroy_session(request)
+    from api.v1.auth import auth
+    destroy_session_res = auth.destroy_session(request)
     if destroy_session_res is False:
         abort(404)
     else:
