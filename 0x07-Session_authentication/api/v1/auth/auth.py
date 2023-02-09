@@ -2,8 +2,10 @@
 """
 auth module for the API
 """
-from flask import request
-from typing import List, TypeVar
+import os
+import typing
+
+T = typing.TypeVar('T')
 
 
 class Auth():
@@ -28,6 +30,15 @@ class Auth():
             return None
         return request.headers.get("Authorization")
 
-    def current_user(self, request=None) -> TypeVar('User'):
+    def session_cookie(self, request=None):
+        """Get the value of the session cookie from the request"""
+        if request is None:
+            return None
+        SESSION_NAME = os.environ.get('SESSION_NAME')
+        if SESSION_NAME is None:
+            return None
+        return request.cookies.get(SESSION_NAME)
+
+    def current_user(self, request=None) -> T:
         """current_user"""
         return None
