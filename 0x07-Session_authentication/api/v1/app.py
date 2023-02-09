@@ -8,10 +8,9 @@ from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 import os
 
-
 app = Flask(__name__)
 app.register_blueprint(app_views)
-CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+CORS(app, resources={r"/api/v1/": {"origins": ""}})
 auth = None
 
 AUTH_TYPE = getenv("AUTH_TYPE")
@@ -41,7 +40,9 @@ def before_request() -> str:
                                             '/api/v1/forbidden/',
                                             '/api/v1/auth_session/login/']):
         return
-    if auth.authorization_header(request) is None:
+    if not auth.authorization_header(
+                                    request
+                                     ) or not auth.session_cookie(request):
         abort(401)
     if auth.current_user(request) is None:
         abort(403)
