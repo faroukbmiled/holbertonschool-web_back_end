@@ -5,12 +5,14 @@ auth module
 from api.v1.auth.auth import Auth
 from uuid import uuid4
 from flask import jsonify, make_response, request
-from .__init__ import app_views
 from models.user import User
+
+from .__init__ import app_views
 
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
-def session_login():
+def login() -> str:
+    """ POST /api/v1/auth_session/login"""
     email = request.form.get('email')
     if email is None or email == "":
         return jsonify({"error": "email missing"}), 400
