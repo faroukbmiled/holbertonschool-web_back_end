@@ -13,9 +13,12 @@ class SessionAuth(Auth):
 
     user_id_by_session_id = {}
 
-    @staticmethod
-    def create_session(user_id: str) -> str:
+    def create_session(self, user_id: str = None) -> str:
         """ session comment """
+        if user_id is None:
+            return None
+        if not isinstance(user_id, str):
+            return None
         sess_id = str(uuid4())
         SessionAuth.user_id_by_session_id[sess_id] = user_id
         return sess_id
