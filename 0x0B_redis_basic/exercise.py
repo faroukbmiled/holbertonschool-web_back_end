@@ -10,17 +10,16 @@ from datetime import datetime
 def call_history(method: Callable) -> Callable:
     """call_history"""
     key = method.__qualname__
-    inputs = key + ":inputs"
-    outputs = key + ":outputs"
+    input = key + ":inputs"
+    output = key + ":outputs"
 
     @wraps(method)
     def wrapper(self, *args, **kwds):
         """ wrapped function """
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        self._redis.rpush(inputs, f"{timestamp}: {str(args)}")
-        data = method(self, *args, **kwds)
-        self._redis.rpush(outputs, f"{timestamp}: {str(data)}")
-        return data
+        self._redis.rpush(input, str(args))
+        out = method(self, *args, **kwds)
+        self._redis.rpush(output, str(data))
+        return out
 
     return wrapper
 
@@ -81,7 +80,7 @@ def replay(method: Callable):
     print("{} was called {} times:".format(key, count))
     In = plugin.lrange(inputs, 0, -1)
     Out = plugin.lrange(output, 0, -1)
-    zip = list(zip(In, Out))
-    for k, v in zip:
+    zipped = list(zip(In, Out))
+    for k, v in zipped:
         attr, data = k.decode("utf-8"), v.decode("utf-8")
         print("{}(*{}) -> {}".format(key, attr, data))
