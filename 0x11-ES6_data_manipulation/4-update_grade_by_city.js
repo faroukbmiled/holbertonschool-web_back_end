@@ -1,5 +1,5 @@
-export default function updateStudentGradeByCity(students, city, newGrades) {
-  return students
+function updateStudentGradeByCity(getListStudents, city, newGrades) {
+  return getListStudents
     .filter((student) => student.location === city)
     .map((student) => {
       const foundGrade = newGrades.find((grade) => grade.studentId === student.id);
@@ -9,3 +9,5 @@ export default function updateStudentGradeByCity(students, city, newGrades) {
       };
     });
 }
+
+export default updateStudentGradeByCity;
