@@ -3,7 +3,7 @@
 from typing import Sequence, Optional, Any
 
 
-def safe_first_element(lst: Sequence[Any]) -> Optional[Any]:
+def safe_first_element(lst: Optional[Sequence[Any]]) -> Optional[Any]:
     """Return the sum of a list of floats"""
     if lst:
         return lst[0]
