@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def root():
-    """app.py"""
+    """root"""
     return render_template('0-index.html')
 
 
