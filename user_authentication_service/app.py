@@ -14,7 +14,7 @@ def hello_world() -> str:
     Returns:
       - JSON payload
     """
-    msg = {"message": "Welcome"}
+    msg = {"message": "Bienvenue"}
     return jsonify(msg)
 
 
