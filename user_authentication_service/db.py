@@ -8,6 +8,7 @@ from sqlalchemy.exc import InvalidRequestError, NoResultFound
 from typing import TypeVar
 from user import Base, User
 
+
 class DB:
     """DB Class for Object-Relational Mapping."""
 
